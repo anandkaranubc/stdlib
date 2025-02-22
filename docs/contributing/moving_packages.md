@@ -255,13 +255,13 @@ There are three packages where we do **not** want to update `require` paths.
 To dismiss any changes made to the above, run the following command
 
 ```bash
-git checkout -- ./lib/node_modules/@stdlib/path/to/original/package && git checkout -- ./lib/node_modules/@stdlib/error && git checkout -- ./lib/node_modules/@stdlib/repl && git status
+git checkout -- ./lib/node_modules/@stdlib/path/to/original/package && git checkout -- ./lib/node_modules/@stdlib/error && git checkout -- ./lib/node_modules/@stdlib/repl/**/data && git status
 ```
 
 For example,
 
 ```bash
-git checkout -- ./lib/node_modules/@stdlib/stats/base/dmax && git checkout -- ./lib/node_modules/@stdlib/error && git checkout -- ./lib/node_modules/@stdlib/repl && git status
+git checkout -- ./lib/node_modules/@stdlib/stats/base/dmax && git checkout -- ./lib/node_modules/@stdlib/error && git checkout -- ./lib/node_modules/@stdlib/repl/**/data && git status
 ```
 
 After running the above, double-check the results of `git status` to check that the list of changed files matches expectation.
@@ -346,14 +346,34 @@ If you made these changes on a fork, you should open a pull request against the 
 
 -   A pull request should **only** migrate a single package. Please do **not** open pull request which attempts to migrate multiple packages at the same time.
 -   Notice that every commit includes a `Ref:` link back to the RFC issue on the main project repository. This is useful for providing additional context regarding changes, especially those involving deprecations.
--   Provided you have properly setup your local repository (see the [contributing][stdlib-contributing] and [development][stdlib-development] guides), linting will be performed after every commit, and, prior to pushing changes to a remote repository, affected unit tests, examples, and benchmarks should automatically run. Depending on how widely used the original package was throughout stdlib, these quality control steps may take considerable time, and it is possible that unrelated lint errors may be flagged. If possible, address any failures, restage the changes, and attempt to commit or push again.
+-   Provided you have properly setup your local repository (see the [contributing][stdlib-contributing] and [development][stdlib-development] guides), linting will be performed after every commit, and, prior to pushing changes to a remote repository, affected unit tests, examples, and benchmarks should automatically run. Depending on how widely used the original package was throughout stdlib, these quality control steps may take considerable time, and it is possible that unrelated lint errors may be flagged. If possible, address any failures, restage the changes, and attempt to commit or push again. Note that resolution of failures, may require amending previous commits.
 -   As mentioned above, be **very careful** when performing global find-and-replace. It can be easy to mistakenly update non-applicable paths, thus breaking packages and all downstream dependents. You've been warned.
 
 * * *
 
 ## Checklist
 
+The following is a checklist you can use when performing a package migration:
 
+-   [ ] Established a clean repository and created a migration branch based on the latest changes on the upstream `develop`.
+-   [ ] Copied the existing package to the desired location.
+-   [ ] Updated require paths in the new package.
+-   [ ] Updated include directories in the new package.
+-   [ ] Updated header guards in the new package.
+-   [ ] Compiled native code and ran unit tests for the new package.
+-   [ ] Committed the new package to the migration branch.
+-   [ ] Removed the export of the original package from its parent namespace (if applicable).
+-   [ ] Committed the changes to the parent namespace (if applicable).
+-   [ ] Updated `require` paths across the project to refer to the new package.
+-   [ ] Discarded any path changes to the original package.
+-   [ ] Discarded any path changes to the `@stdlib/error` namespace.
+-   [ ] Discarded any path changes to the `@stdlib/repl/**/data` database files.
+-   [ ] Committed path updates.
+-   [ ] Removed the original package.
+-   [ ] Committed removal of the original package.
+-   [ ] Resolved any encountered lint errors or test failures when committing and/or pushing changes.
+-   [ ] Opened a pull request which performs one and only one package migration.
+-   [ ] The pull request includes at most `4` commits.
 
 * * *
 
