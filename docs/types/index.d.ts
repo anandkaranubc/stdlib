@@ -55,6 +55,7 @@ import string = require( '@stdlib/string' );
 import symbol = require( '@stdlib/symbol' );
 import time = require( '@stdlib/time' );
 import utils = require( '@stdlib/utils' );
+import wasm = require( '@stdlib/wasm' );
 
 /**
 * Interface describing the `stdlib` namespace.
@@ -238,6 +239,11 @@ interface Namespace {
 	* Standard utilities.
 	*/
 	utils: typeof utils;
+
+	/**
+	* WebAssembly utilities.
+	*/
+	wasm: typeof wasm;
 }
 
 /**
