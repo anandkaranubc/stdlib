@@ -344,9 +344,62 @@ If you made these changes on a fork, you should open a pull request against the 
 
 ## Notes
 
+-   A pull request should **only** migrate a single package. Please do **not** open pull request which attempts to migrate multiple packages at the same time.
 -   Notice that every commit includes a `Ref:` link back to the RFC issue on the main project repository. This is useful for providing additional context regarding changes, especially those involving deprecations.
 -   Provided you have properly setup your local repository (see the [contributing][stdlib-contributing] and [development][stdlib-development] guides), linting will be performed after every commit, and, prior to pushing changes to a remote repository, affected unit tests, examples, and benchmarks should automatically run. Depending on how widely used the original package was throughout stdlib, these quality control steps may take considerable time, and it is possible that unrelated lint errors may be flagged. If possible, address any failures, restage the changes, and attempt to commit or push again.
 -   As mentioned above, be **very careful** when performing global find-and-replace. It can be easy to mistakenly update non-applicable paths, thus breaking packages and all downstream dependents. You've been warned.
+
+* * *
+
+## Checklist
+
+
+
+* * *
+
+## Reviewers
+
+Typically, we prefer to squash commits to a single commit when merging pull requests in stdlib. However, when performing package migrations, we need to preserve the exact sequence of migration commits in order to ensure proper changelog generation and automatic package versioning. Accordingly, the procedure for reviewing and merging migration pull requests diverges from normal protocol and requires additional vigilance to ensure that a migration does not break downstream usage.
+
+When reviewing a pull request involving a package migration, one should do the following:
+
+1.  Verify that the pull request includes at most `4` and only `4` commits (i.e., `feat`, `remove`, `refactor`, and `remove`, in that order). It is possible that the namespace of the original package did not export an associated symbol; in which case, the first `remove` may not be present, and the sequence should be `feat`, `refactor`, and `remove`, in that order.
+
+2.  Verify that all CI checks pass. If not, investigate and determine whether to block the pull request from being merged.
+
+3.  Inspect each commit for the following:
+
+    -   `feat`: should only add the new package. Ensure that all `require` paths have been updated and correctly refer to the new package. Ensure that any `include` directories have been renamed. Ensure that header guards have been updated.
+    -   `remove`: should only remove the symbol from the original package.
+    -   `refactor`: check as many files as possible, ensuring a wide cross-section of affected files, to ensure that the updated paths correctly point to the new package.
+    -   `remove`: should only remove the original package.
+
+    If there exists a public issue associated with the migration, ensure that each commit refers to that public issue with a `ref:` Git trailer.
+
+    Ensure that each `remove` commit message body includes a `BREAKING CHANGE` section, along with migration steps.
+
+4.  If the pull request has merge conflicts, inspect the conflicts and determine whether you can easily resolve. If the conflicts cannot be resolved, you'll likely need to block the pull request from being merged. If they can be resolve, go ahead and resolve them, creating a merge commit.
+
+5.  If everything looks okay, approve the pull request changes.
+
+6.  If the pull request includes a merge commit, do the following:
+
+    -   Enable "Allow merge commits" (with the default message) on GitHub in repository settings.
+    -   Refresh the pull request page.
+    -   Select "Create a merge commit".
+    -   In the commit body, add a `ref:` trailer which points to the PR URL and add a `reviewed-by:` trailer with your info.
+    -   Merge.
+    -   Disable "Allow merge commits" on GitHub in repository settings. Our default merge setting should be "Squash and merge", and we do not want to mistakenly perform merge commits in future PRs.
+    -   Finished.
+
+7.  Otherwise, do the following:
+
+    -   Enable "Allow rebase merging" on GitHub in repository settings.
+    -   Refresh the pull request page.
+    -   Select "Rebase and merge".
+    -   Confirm that you wish to perform the operation.
+    -   Merge.
+    -   Finished.
 
 <section class="links">
 
