@@ -48,7 +48,7 @@ The following guide sets forth doctest conventions for documenting expected beha
 
 A doctest annotation is a syntactically valid language comment consisting of a **marker** and an **expected value**.
 
-> **Note**: most of the following examples will be written in JavaScript which uses C-style comment syntax. While invariably biased toward JavaScript, the doctest annotation convention endeavors to be language agnostic and not limited to any particular comment style. 
+> **Note**: most of the following examples will be written in JavaScript which uses C-style comment syntax. While invariably biased toward JavaScript, the doctest annotation convention endeavors to be language agnostic and not limited to any particular comment style.
 
 Doctest annotations begin with one of three keyword markers (with limited exceptions documented below):
 
@@ -129,7 +129,7 @@ swap( x, 0, 1 );
 // x => [ 2, 1 ]
 ```
 
-indicates that the two-element array to which `x` refers has been mutated after evaluation of the preceding expressions. In this case, as `swap()` returns a `boolean`, the `returns` keyword would not allow us to assert the more salient behavior of array mutation. By using the `{var} =>` convention, we can do so.  
+indicates that the two-element array to which `x` refers has been mutated after evaluation of the preceding expressions. In this case, as `swap()` returns a `boolean`, the `returns` keyword would not allow us to assert the more salient behavior of array mutation. By using the `{var} =>` convention, we can do so.
 
 The `e.g.,` and `{var} =>` prefixes can be used in combination. For example,
 
@@ -602,7 +602,7 @@ var mat = foo();
 
 indicates that `foo()` returns an `NxM` matrix containing a `2x2` sub-matrix beginning with the first row and second column whose contents, when expressed as a linear array, equal `1.14`, `-3.14`, `0.00`, and `0.50`.
 
-Additionally, matrices can include wildcards. For example, 
+Additionally, matrices can include wildcards. For example,
 
 <!-- run-disable -->
 

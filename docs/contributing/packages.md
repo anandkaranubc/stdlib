@@ -114,7 +114,7 @@ Once a package is complete and tested, you are ready to request that your contri
 
 [stdlib-snippets]: https://github.com/stdlib-js/stdlib/tree/develop/tools/snippets
 
-[stdlib-repl-text]: https://github.com/stdlib-js/stdlib/tree/develop/docs/repl_text.md
+[stdlib-repl-text]: https://github.com/stdlib-js/stdlib/tree/develop/docs/contributing/repl_text.md
 
 </section>
 

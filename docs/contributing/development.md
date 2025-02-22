@@ -254,7 +254,7 @@ workshops  workshops
     ```bash
     $ make TESTS_FILTER=.*/<pattern>/.* test
     ```
-    
+
     with
 
     <!-- run-disable -->
@@ -262,7 +262,6 @@ workshops  workshops
     ```bash
     $ make TESTS_FILTER=".*/<pattern>/.*" test
     ```
-    
 
 ## Editors
 

@@ -535,7 +535,7 @@ A few notes:
         A short description.
 
         ...
-        
+
         Examples
         --------
         > var out = {{alias}}( 'beep' )
@@ -555,7 +555,7 @@ A few notes:
         A short description.
 
         ...
-        
+
         Examples
         --------
         > var out = {{alias}}( {{alias:@stdlib/constants/math/float64-pi}} )
