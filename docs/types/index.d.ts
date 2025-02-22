@@ -30,6 +30,7 @@ import cli = require( '@stdlib/cli' );
 import complex = require( '@stdlib/complex' );
 import constants = require( '@stdlib/constants' );
 import datasets = require( '@stdlib/datasets' );
+import dstructs = require( '@stdlib/dstructs' );
 import error = require( '@stdlib/error' );
 import fs = require( '@stdlib/fs' );
 import iter = require( '@stdlib/iter' );
@@ -110,6 +111,11 @@ interface Namespace {
 	* @returns dataset
 	*/
 	datasets: typeof datasets;
+
+	/**
+	* Data structures.
+	*/
+	dstructs: typeof dstructs;
 
 	/**
 	* Errors.
