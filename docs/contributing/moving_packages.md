@@ -64,11 +64,11 @@ cp -R lib/node_modules/@stdlib/stats/base/dmax lib/node_modules/@stdlib/stats/st
 
 Next, update the contents of the new package, which is likely to include the following:
 
--   The package name (`package.json`, `lib/index.js`, `README.md`, and any other files which include the name of the original package.
+-   The package name, as found in files, such as `package.json`, `lib/index.js`, `README.md`, and any other files which include the name of the original package.
 
 -   If a package contains `src` and `include` directories,
 
-    -   update the directory tree according to the path of the new package (e.g., `include/stdlib/stats/base/dmax` would become `include/stdlib/stats/strided/dmax`).
+    -   update the `include` directory tree according to the path of the new package (e.g., `include/stdlib/stats/base/dmax` would become `include/stdlib/stats/strided/dmax`).
     -   update header guards within header files in the `include` directory (e.g., `STDLIB_STATS_BASE_DMAX` would become `STDLIB_STATS_STRIDED_DMAX`).
 
 There may be other contents needing updating, so be sure to carefully inspect package contents.
@@ -91,7 +91,7 @@ make install-node-addons NODE_ADDONS_PATTERN="stats/strided/dmax"
 
 To ensure that the new package works as intended, run the package's unit tests and other quality control commands.
 
-#### Unit tests
+#### a. Unit tests
 
 ```bash
 make test TESTS_FILTER=".*/path/to/new/package/.*"
@@ -103,7 +103,7 @@ For example,
 make test TESTS_FILTER=".*/stats/strided/dmax/.*"
 ```
 
-#### Examples
+#### b. Examples
 
 ```bash
 make examples EXAMPLES_FILTER=".*/path/to/new/package/.*"
@@ -127,7 +127,7 @@ For example,
 make examples-c EXAMPLES_FILTER=".*/stats/strided/dmax/.*"
 ```
 
-#### Benchmarks
+#### c. Benchmarks
 
 ```bash
 make benchmark BENCHMARKS_FILTER=".*/path/to/new/package/.*"
@@ -177,7 +177,7 @@ Ref: https://github.com/stdlib-js/stdlib/issues/4797
 
 ### 6. Remove the export of the original package from its parent namespace
 
-Next, open the `lib/index.js` file found in the parent namespace of the original package (e.g., `lib/node_modules/@stdlib/stats/base/lib/index.js`.
+Next, open the `lib/index.js` file found in the parent namespace of the original package (e.g., `lib/node_modules/@stdlib/stats/base/lib/index.js`).
 
 If that file includes an exported symbol from the original package, remove it. For example,
 
@@ -212,13 +212,13 @@ In your commit message, you should include a `BREAKING_CHANGE`, migration instru
 ```text
 remove: remove `dmax` from namespace
 
-This commit removes the `dmax` symbol from the `stats/base`
+This commit removes the `dmax` symbol from the `@stdlib/stats/base`
 namespace due to a package migration.
 
 BREAKING CHANGE: remove `dmax`
 
 To migrate, users should access the same symbol via the
-`stats/strided` namespace.
+`@stdlib/stats/strided` namespace.
 ```
 
 ### 8. Update paths using a global find-and-replace
@@ -227,13 +227,13 @@ Next, perform a global find-and-replace to migrate all `require` (and `import`) 
 
 For example, the following `require` statement
 
-```text
+```javascript
 var dmax = require( 'stats/base/dmax' );
 ```
 
 should become
 
-```text
+```javascript
 var dmax = require( 'stats/strided/dmax' );
 ```
 
@@ -246,27 +246,33 @@ A couple of very important notes to keep in mind when performing a global find-a
 
 There are three packages where we do **not** want to update `require` paths.
 
--   The original package. The original package should remain working and keeps its original paths.
--   The global error database. The global error database is an append-only log. We need to avoid invalidating any existing references.
--   The REPL databases. Given the high velocity of stdlib development, updating these databases will create merge conflicts, which do not need to be immediately resolved. We can avoid the hassle of needing to rectify these conflicts by deferring to stdlib's daily cron job which automatically maintains and updates these databases.
+-   **The original package.** The original package should remain working and keep its original paths.
+-   **The global error database.** The global error database is an append-only log. We need to avoid invalidating any existing references.
+-   **The REPL databases.** Given the high velocity of stdlib development, updating these databases will create merge conflicts, which do not need to be immediately resolved. We can avoid the hassle of needing to rectify these conflicts by deferring to stdlib's daily cron job which automatically maintains and updates these databases.
 
 To dismiss any changes made to the above, run the following command
 
 ```bash
-git checkout -- ./lib/node_modules/@stdlib/path/to/original/package && git checkout -- ./lib/node_modules/@stdlib/error && git checkout -- ./lib/node_modules/@stdlib/repl/**/data && git status
+git checkout -- ./lib/node_modules/@stdlib/path/to/original/package && \
+    git checkout -- ./lib/node_modules/@stdlib/error && \
+    git checkout -- ./lib/node_modules/@stdlib/repl/**/data && \
+    git status
 ```
 
 For example,
 
 ```bash
-git checkout -- ./lib/node_modules/@stdlib/stats/base/dmax && git checkout -- ./lib/node_modules/@stdlib/error && git checkout -- ./lib/node_modules/@stdlib/repl/**/data && git status
+git checkout -- ./lib/node_modules/@stdlib/stats/base/dmax && \
+    git checkout -- ./lib/node_modules/@stdlib/error && \
+    git checkout -- ./lib/node_modules/@stdlib/repl/**/data && \
+    git status
 ```
 
 After running the above, double-check the results of `git status` to check that the list of changed files matches expectation.
 
 ### 10. Commit changes
 
-Now that you've cleaned up the path updates, commit the changes to your branch.
+Now that you've cleaned up paths, commit the changes to your branch.
 
 ```bash
 git add . && git commit
@@ -344,8 +350,8 @@ If you made these changes on a fork, you should open a pull request against the 
 
 -   A pull request should **only** migrate a single package. Please do **not** open pull request which attempts to migrate multiple packages at the same time.
 -   Notice that every commit includes a `Ref:` link back to the RFC issue on the main project repository. This is useful for providing additional context regarding changes, especially those involving deprecations.
--   Provided you have properly setup your local repository (see the [contributing][stdlib-contributing] and [development][stdlib-development] guides), linting will be performed after every commit, and, prior to pushing changes to a remote repository, affected unit tests, examples, and benchmarks should automatically run. Depending on how widely used the original package was throughout stdlib, these quality control steps may take considerable time, and it is possible that unrelated lint errors may be flagged. If possible, address any failures, restage the changes, and attempt to commit or push again. Note that resolution of failures, may require amending previous commits.
--   As mentioned above, be **very careful** when performing global find-and-replace. It can be easy to mistakenly update non-applicable paths, thus breaking packages and all downstream dependents. You've been warned.
+-   Provided you have properly setup your local repository (see the [contributing][stdlib-contributing] and [development][stdlib-development] guides), linting will be performed after every commit, and, prior to pushing changes to a remote repository, affected unit tests, examples, and benchmarks should automatically run. Depending on how widely used the original package was throughout stdlib, these quality control steps may take considerable time, and it is possible that unrelated lint errors may be flagged. If possible, address any failures, restage the changes, and attempt to commit or push again. Note that resolution of failures may require amending previous commits.
+-   As mentioned above, be **very careful** when performing a global find-and-replace. It can be easy to mistakenly update non-applicable paths, thus breaking packages and all downstream dependents. You've been warned.
 
 * * *
 
@@ -359,16 +365,16 @@ The following is a checklist you can use when performing a package migration:
 -   [ ] Updated include directories in the new package.
 -   [ ] Updated header guards in the new package.
 -   [ ] Compiled native code and ran unit tests for the new package.
--   [ ] Committed the new package to the migration branch.
+-   [ ] Committed the new package to a migration branch, with a link to any relevant public GitHub issues.
 -   [ ] Removed the export of the original package from its parent namespace (if applicable).
--   [ ] Committed the changes to the parent namespace (if applicable).
+-   [ ] Committed the changes to the parent namespace (if applicable), with a link to any relevant public GitHub issues and with user migration instructions.
 -   [ ] Updated `require` paths across the project to refer to the new package.
 -   [ ] Discarded any path changes to the original package.
 -   [ ] Discarded any path changes to the `@stdlib/error` namespace.
--   [ ] Discarded any path changes to the `@stdlib/repl/**/data` database files.
--   [ ] Committed path updates.
+-   [ ] Discarded any path changes to `@stdlib/repl/**/data` database files.
+-   [ ] Committed path updates, with a link to any relevant public GitHub issues.
 -   [ ] Removed the original package.
--   [ ] Committed removal of the original package.
+-   [ ] Committed removal of the original package, with a link to any relevant public GitHub issues and with user migration instructions.
 -   [ ] Resolved any encountered lint errors or test failures when committing and/or pushing changes.
 -   [ ] Opened a pull request which performs one and only one package migration.
 -   [ ] The pull request includes at most `4` commits.
@@ -388,15 +394,15 @@ When reviewing a pull request involving a package migration, one should do the f
 3.  Inspect each commit for the following:
 
     -   `feat`: should only add the new package. Ensure that all `require` paths have been updated and correctly refer to the new package. Ensure that any `include` directories have been renamed. Ensure that header guards have been updated.
-    -   `remove`: should only remove the symbol from the original package.
-    -   `refactor`: check as many files as possible, ensuring a wide cross-section of affected files, to ensure that the updated paths correctly point to the new package.
+    -   `remove`: should only remove the symbol from the parent namespace of the original package.
+    -   `refactor`: should only update paths, but may include lint fixes if these were encountered while committing. Check as many files as possible in order to obtain a wide cross-section of affected files and ensure that the updated paths correctly point to the new package. Verify that affected packages do **not** include the original package, error databases, or REPL databases.
     -   `remove`: should only remove the original package.
 
     If there exists a public issue associated with the migration, ensure that each commit refers to that public issue with a `ref:` Git trailer.
 
     Ensure that each `remove` commit message body includes a `BREAKING CHANGE` section, along with migration steps.
 
-4.  If the pull request has merge conflicts, inspect the conflicts and determine whether you can easily resolve. If the conflicts cannot be resolved, you'll likely need to block the pull request from being merged. If they can be resolve, go ahead and resolve them, creating a merge commit.
+4.  If the pull request has merge conflicts, inspect the conflicts and determine whether you can easily resolve. If the conflicts cannot be resolved, you'll likely need to block the pull request from being merged. If they can be resolved, go ahead and resolve them, creating a merge commit.
 
 5.  If everything looks okay, approve the pull request changes.
 
@@ -417,6 +423,7 @@ When reviewing a pull request involving a package migration, one should do the f
     -   Select "Rebase and merge".
     -   Confirm that you wish to perform the operation.
     -   Merge.
+    -   Disable "Allow rebase merging" on GitHub in repository settings. Our default merge setting should be "Squash and merge", and we do not want to mistakenly perform rebase commits in future PRs.
     -   Finished.
 
 <section class="links">
