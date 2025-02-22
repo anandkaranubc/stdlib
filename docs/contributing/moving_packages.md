@@ -22,9 +22,7 @@ limitations under the License.
 
 > This document is intended to provide a step-by-step guide for moving a package from one part of the codebase to another part of the codebase. This guide also applies when renaming a package.
 
-The following outlines a sequence of steps to follow in order to migrate a single strided API package which is in `stats/base` to `stats/strided`.
-
-At a high level, the process is as follows:
+At a high level, the process for migrating a single package to another part of the codebase is as follows:
 
 1.  Copy the existing package to a new location.
 2.  Update all import paths which point to the original package to the new copy.
