@@ -32,7 +32,7 @@ limitations under the License.
 
 <div class="image" align="center">
     <a title="Exploring stdlib: JavaScript's Answer to Technical Computing" href="https://www.inspiringcomputing.com/2107763/episodes/16662797-exploring-stdlib-javascript-s-answer-to-technical-computing">
-        <img src="" alt="Exploring stdlib: JavaScript's Answer to Technical Computing">
+        <img src="https://cdn.jsdelivr.net/gh/stdlib-js/stdlib@a8d27ad54095da3af1830454d0abc0de48948d2f/docs/assets/talks/inspiring_computing_2025_athan_reines.png" alt="Exploring stdlib: JavaScript's Answer to Technical Computing">
     </a>
     <br>
 </div>
