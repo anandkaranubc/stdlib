@@ -143,7 +143,7 @@ main() {
 
 	# Run C benchmarks:
 	echo "Finding C benchmark files in ${directories}..."
-	c_bench_files=$(find "${directories}" -maxdepth 4 -wholename '**/benchmark/c/benchmark*.c' -exec realpath {} \; | grep -v '/fixtures/' | sort -u | tr '\n' ' ') || true
+	c_bench_files=$(find "${directories}" -maxdepth 5 \( -wholename '**/benchmark/c/benchmark*.c' -or -wholename '**/benchmark/c/**/benchmark*.c' \) -exec realpath {} \; | grep -v '/fixtures/' | sort -u | tr '\n' ' ') || true
 
 	if [ -n "${c_bench_files}" ]; then
 		make benchmark-c-files FILES="${c_bench_files}"
