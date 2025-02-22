@@ -114,7 +114,7 @@ double precision function add( x, y )
 end function add
 ```
 
-While `add` may be used in conjunction with other Fortran files, we cannot use `add` directly from C because Fortran expects arguments to be passed by reference rather than by value. Furthermore, while not applicable here, Fortran functions can only return scalar values, not arrays. Thus, the general best practice is to wrap `add` as a subroutine (equivalent of a C function returning `(void)`), where we can pass a pointer for storing the output return value. 
+While `add` may be used in conjunction with other Fortran files, we cannot use `add` directly from C because Fortran expects arguments to be passed by reference rather than by value. In general, for functions accepting and returning scalars, best practice is to wrap `add` as a subroutine (equivalent of a C function returning `(void)`), where we can pass a pointer for storing the output return value.
 
 ```fortran
 !>
@@ -172,7 +172,7 @@ where we prevent name mangling using `extern "C"`. Now that our Fortran code is 
 double c_add( const double x, const double y ) {
   double sum;
   addsub( &x, &y, &sum );
-  return sum; 
+  return sum;
 }
 ```
 
